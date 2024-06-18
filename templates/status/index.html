@@ -1,0 +1,102 @@
+{% extends "layouts/master.html" %}
+{% block module %} Status {% endblock %}
+{% block content %}
+<div class="card">
+  <div class="card-header">
+    <h3 class="card-title">Customer who Rented </h3>
+    <div class="card-tools">
+    </div>
+</div>
+<!-- /.card-header -->
+<div class="card-body">
+    <table id="example1" class="table table-bordered table-striped">
+      <thead>
+          <tr>
+            <th>#</th>
+            <th>Tracking Code</th>
+            <th>Customer</th>
+            <th>Book Rented</th>
+            <th>Date Rented</th>
+            <th>Return Date</th>
+            <th>Copies Rented</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for x in data%}
+        {% set dates = x['requested_date'].split('|') %}
+        <tr>
+            <td style="text-align: center; vertical-align: middle;">{{loop.index}}</td>
+            <td style="text-align: center; vertical-align: middle;">{{x['request_code']}}</td>
+            {% if x['user_id']|int in names %}
+                <td style="text-align: center; vertical-align: middle;">{{names[x['user_id']|int]}}</td>
+            {%endif%}
+            {% if x['book_id_requested']|int in books %}
+                <td style="text-align: center; vertical-align: middle;">{{books[x['book_id_requested']|int]}}</td>
+            {%endif%}
+            <td style="text-align: center; vertical-align: middle;">{{dates[0]}}</td>
+            <td style="text-align: center; vertical-align: middle;">{{dates[1]}}</td>
+            <td style="text-align: center; vertical-align: middle;">{{x['requested_quantity']}}</td>
+
+            {% if x['status'] == "Rented"  %}
+            <td style="text-align: center; vertical-align: middle;"><button type="button" class="btn btn-block btn-outline-success btn-xs" id="balik" data-id ={{x['id']}} >Return</button>
+            </button></td>
+            {% else%}
+            <td style="text-align: center; vertical-align: middle;">Returned on <br> {{x['updated_at' ] | ctime}}<td>
+            {%endif%}
+
+        </tr>
+        
+        
+        {%endfor%}
+    </tbody>
+    <tfoot>
+      <tr>
+            <th>#</th>
+            <th>Tracking Code</th>
+            <th>Customer</th>
+            <th>Book Rented</th>
+            <th>Date Rented</th>
+            <th>Return Date</th>
+            <th>Copies Rented</th>
+            <th>Status</th>
+    </tr>
+</tfoot>
+</table>
+</div>
+<!-- /.card-body -->
+</div>
+{% endblock %}
+{% block script %}
+
+/scriptfuta
+<script>
+
+    $(document).on("click","#balik", function(e){
+        e.preventDefault();
+        var id = $(this).data("id");
+        $.ajax({
+            url :"{{ url_for('status.status_update')}}",
+            type :"POST",
+            data : JSON.stringify({
+             id : id,
+            
+         }),
+            dataType :"json",
+            contentType :"application/json; charset=utf-8",
+            success : function(data){
+              if (data == 1) {
+                location.reload();
+            }else{
+                alert('Database Error!')
+            }
+        }
+      });
+  
+  
+    
+    });
+
+
+</script>
+{% endblock %}

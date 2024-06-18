@@ -1,0 +1,108 @@
+{% extends "layouts/master.html" %}
+{% block module %} History {% endblock %}
+
+
+
+{% block content %}
+<div class="row">
+    <div class="col-xl-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-chart-area me-1"></i>
+                Register Book
+            </div>
+            <div class="card-body">
+                <form id="addForm">
+                    <div class="form-floating mb-3">
+                        <input class="form-control"  type="file" id="img" name="img" accept="image/*">  
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input class="form-control" id="inputTittle" type="text" placeholder="Title here" />
+                        <label for="inputTittle">Book Title</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input class="form-control" id="inputGenre" type="text" placeholder="Separate with |" />
+                        <label for="inputGenre">Genre</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input class="form-control" id="inputCast" type="text" placeholder="Separate with |" />
+                        <label for="inputGenre">Cast</label>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3 mb-md-0">
+                                <input class="form-control" id="inputAmount" type="number" min=1 max="9999" />
+                                <label for="inputAmount">Amount</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input class="form-control" id="inputqty" type="number" min=1 max="9999"/>
+                                <label for="inputqty">Quantity</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4 mb-0">
+                        <div class="d-grid"><a class="btn btn-success btn-block"  id="save-button">Register Book</a></div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-8">
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-table me-1"></i>
+                Book List
+            </div>
+            <div class="card-body">
+                <table id="datatablesSimple">
+                    <thead>
+                        <tr>
+                            <th>id</th>
+                            <th>request_code</th>
+                            <th>book_id</th>
+                            <th>user_id</th>
+                            <th>duration</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="load-table">
+                        {% for x in data %}
+                        <tr>
+                            <td>{{x['id']}}</td>
+                            <td>{{x['title']}}</td>
+                            <td>{{x['available']}}</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>
+                                <div class="row">
+                                    <button class="btn btn-warning  btn-sm" id="edit_me"> Edit </button>
+                                    <button class="btn btn-danger  btn-sm" id="delete_me"> Delete </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor%}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th>id</th>
+                            <th>request_code</th>
+                            <th>book_id</th>
+                            <th>user_id</th>
+                            <th>duration</th>
+                            <th>Action</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>            
+
+{% endblock %}
+
+{% block script %}
+
+
+{% endblock %}

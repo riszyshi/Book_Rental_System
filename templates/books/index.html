@@ -1,0 +1,524 @@
+{% extends "layouts/master.html" %}
+{% block module %} Books {% endblock %}
+{% block crump %} Book {% endblock %}
+{% block head %}  
+{% endblock %}
+{% block content %}  
+<div class="card">
+  <div class="card-header">
+    <h3 class="card-title"> List</h3>
+    <div class="card-tools">
+       <button type="button" class="btn btn-block btn-outline-success btn-xs" data-toggle="modal" data-target="#modal-default">Add new Book</button>
+   </button>
+</div>
+</div>
+<!-- /.card-header -->
+<div class="card-body">
+    <table id="example1" class="table table-bordered table-striped">
+      <thead>
+          <tr>
+            <th>#</th>
+            <th>Image</th>
+            <th>Book Title</th>
+            <th>Available</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for x in data%}
+        <tr>
+            <td style="text-align: center; vertical-align: middle;">{{loop.index}}</td>
+            <td><img src="{{x['img']}}" /></td>
+            <td style="text-align: center; vertical-align: middle;">{{x['title']}}</td>
+            <td style="text-align: center; vertical-align: middle;">{{x['available']}}</td>
+            <td style="text-align: center; vertical-align: middle;">
+                <div class="row">
+<!--                     <div class="col-md-4">
+                        <a class="btn btn-block bg-secondary btn-sm btn-app"><i class="fas fa-eye"></i> View</a>
+                    </div> -->
+                    <div class="col-md-3">
+                        <a class="btn btn-block bg-primary btn-sm btn-app" id="edit" 
+                        data-id="{{x['id']}}"
+                        data-title="{{x['title']}}"
+                        data-genre="{{x['genre']}}"
+                        data-cast="{{x['cast']}}"
+                        data-amount="{{x['amount']}}"
+                        data-availabless="{{x['qty']}}"
+                        ><i class="fas fa-edit"></i> Edit</a>
+                    </div>
+                    <div class="col-md-4">
+                        <a class="btn btn-block bg-danger btn-sm btn-app" data-id="{{x['id']}}" id="delete"><i class="fas fa-trash"></i> Delete</a>
+                    </div>
+
+                    {% if x['available']|int != 0 %}
+
+                    <div class="col-md-4">
+                        <a class="btn btn-block bg-success btn-sm btn-app" data-ids="{{x['id']}}" data-ams="{{x['amount']}}" data-avs="{{x['available']}}"id="rent_btn"><i class="fas fa-save"></i> Rent</a>
+                    </div>
+
+                    {% else %}
+
+                    <div class="col-md-4">
+                        <a class="btn btn-block bg-default btn-sm btn-app"><i class="fas fa-save"></i> FULLY BOOK </a>
+                    </div>
+
+                    {% endif %}
+
+
+                </div>
+            </td>
+        </tr>
+        {%endfor%}
+    </tbody>
+    <tfoot>
+      <tr>
+        <th>#</th>
+        <th>Image</th>
+        <th>Book Title</th>
+        <th>Available</th>
+        <th>Action</th>
+    </tr>
+</tfoot>
+</table>
+</div>
+<!-- /.card-body -->
+</div>
+<div class="modal fade" id="modal-default">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">New Book</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form id="addForm" enctype="multipart/form-data">
+            <div class="form-floating mb-3">
+                <input class="form-control"  type="file" id="img" name="img" accept="image/*">  
+            </div>
+            <div class="form-floating mb-3">
+                <input class="form-control" id="inputTittle" type="text" placeholder="Title here" />
+                <label for="inputTittle">Book Title</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input class="form-control" id="inputGenre" type="text" placeholder="Separate with |" />
+                <label for="inputGenre">Genre</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input class="form-control" id="inputCast" type="text" placeholder="Separate with |" />
+                <label for="inputGenre">Author</label>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="form-floating mb-3 mb-md-0">
+                        <input class="form-control" id="inputAmount" type="number" min=1 max="9999" />
+                        <label for="inputAmount">Amount</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input class="form-control" id="inputqty" type="number" min=1 max="9999"/>
+                        <label for="inputqty">Quantity</label>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer justify-content-between">
+      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      <button type="button" class="btn btn-primary" id="save-button">Register</button>
+  </div>
+</div>
+<!-- /.modal-content -->
+</div>
+<!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<!-- MODAL FOR EDIT/VIEW -->
+<div class="modal fade" id="modal-VE">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Edit Book</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form id="EditForm">
+            <input type="text" name="sid" id="edit-id" hidden="">
+            <div class="form-floating mb-3">
+                <input class="form-control" id="e_inputTittle" type="text" placeholder="Title here" />
+                <label for="inputTittle">Book Title</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input class="form-control" id="e_inputGenre" type="text" placeholder="Separate with |" />
+                <label for="inputGenre">Genre</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input class="form-control" id="e_inputCast" type="text" placeholder="Separate with |" />
+                <label for="inputGenre">Author</label>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="form-floating mb-3 mb-md-0">
+                        <input class="form-control" id="e_inputAmount" type="number" min=1 max="9999" readonly />
+                        <label for="inputAmount">Amount</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input class="form-control" id="e_inputqty" type="number" min=1 max="9999" readonly />
+                        <label for="inputqty">Quantity</label>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer justify-content-between">
+      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      <button type="button" class="btn btn-primary" id="edit-submit">Update</button>
+  </div>
+</div>
+<!-- /.modal-content -->
+</div>
+<!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<!-- MODAL FOR Rent Modal -->
+<div class="modal fade" id="modal-rent">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="rent-tittle">Rent</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form id="RentForm">
+            <input type="text" name="sid" id="rent-id" hidden="" >
+            <input type="text" name="sid" id="rent-amount" hidden="" >
+            <input type="text" name="sid" id="rent-available" hidden="" >
+            <div class="form-floating mb-3">
+                <label for="inputTittle">Customer Name</label>
+                <select name="customerss" id="customersss" class="form-control">
+                </select>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="form-floating mb-3 mb-md-0">
+                        <label for="inputAmount">Date From</label>
+                        <input type="text" class="form-control" id="date_from" readonly>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <label for="inputqty">Date To</label>
+                        <input type="text" class="form-control" id="date_to" readonly>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input class="form-control" id="rent_qty" type="number" onkeydown="return false" />
+                        <label for="inputqty">Quantity</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3 mb-md-0">
+                        <input class="form-control" id="rent_total_amount" type="text">
+                        <label for="inputAmount">Amount</label>
+                    </div>
+                    <!--Hanap-->
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer justify-content-between">
+      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      <button type="button" class="btn btn-primary" id="book-submit">Rent a Book</button>
+  </div>
+</div>
+<!-- /.modal-content -->
+</div>
+<!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+{% endblock %}
+{% block script %}
+
+<script type="text/javascript">
+    function isdel(vals){
+        $.ajax({
+            url : "{{ url_for('status.updete_iddelete')}}",
+            type : "POST",
+            data : JSON.stringify({id : vals}),
+            dataType : "json",
+            contentType : "application/json; charset=utf-8",
+            success : function(data){
+              if (data == 1){
+              }else{
+
+              }
+          }
+      });
+    }
+
+
+
+// // insert data---------------------------------------------
+$('#save-button').on("click",function(e){
+    e.preventDefault();
+    var form_data = new FormData($('#addForm')[0]);
+    var title = $('#inputTittle').val();
+    var genre = $('#inputGenre').val();
+    var cast = $('#inputCast').val();
+    var image = $('#img').val();
+    var amount = $('#inputAmount').val();
+    var available = $('#inputqty').val();
+    if ( title == "" || genre == ""  || cast == "" || amount == "" || available == "") {
+        alert('Information Empty')
+    }
+    else{
+        $.ajax({
+            url : "{{ url_for('books.books_store')}}",
+            type : "POST",
+            data : JSON.stringify({title : title, genre : genre, cast: cast, amount: amount, available: available, image : image, extra:form_data}),
+            dataType : "json",
+            contentType : "application/json; charset=utf-8",
+            success : function(data){
+                if (data == 1) {
+                    location.reload();
+                }else{
+                    alert('Database Error!')
+                }
+            }
+        });
+    }
+});
+ // update data---------------------------------------------
+ $(document).on("click","#edit", function(e){
+  $('#modal-VE').modal('toggle');
+  var id = $(this).data("id");
+  var title = $(this).data("title");
+  var genre = $(this).data("genre");
+  var cast = $(this).data("cast");
+  var amount = $(this).data("amount");
+  var available = $(this).data("availabless");
+
+  $('#edit-id').val(id);
+  $('#e_inputTittle').val(title);
+  $('#e_inputGenre').val(genre);
+  $('#e_inputCast').val(cast);
+  $('#e_inputAmount').val(amount);
+  $('#e_inputqty').val(available);
+});
+
+ $(document).on("click","#edit-submit", function(e){
+  e.preventDefault();
+  var id =  $('#edit-id').val();
+  var title = $('#e_inputTittle').val();
+  var genre = $('#e_inputGenre').val();
+  var cast = $('#e_inputCast').val();
+  var amount = $('#e_inputAmount').val();
+  var available = $('#e_inputqty').val();
+  if (title == "" || genre == ""  || cast == "" || amount == "" || available == "") {
+    alert('Information Empty')
+}else {
+    $.ajax({
+      url :"{{ url_for('books.books_update')}}",
+      type :"POST",
+      data : JSON.stringify({
+       id : id,
+       title : title, 
+       genre : genre, 
+       cast: cast, 
+       amount: amount, 
+       available: available
+   }),
+      dataType :"json",
+      contentType :"application/json; charset=utf-8",
+      success : function(data){
+        if (data == 1) {
+          $('#modal-VE').modal('hide');
+          location.reload();
+      }else{
+          alert('Database Error!')
+      }
+  }
+});
+}
+});
+  // delete data---------------------------------------------
+  $(document).on("click","#delete", function(e){
+      $('#modal-del').modal('toggle');
+      var id = $(this).data("id");
+      $('#delete-id').val(id);
+  });
+
+  $(document).on("click","#confirmDel", function(e){
+    e.preventDefault();
+    var id =  $('#delete-id').val();
+    $('#delete-id').val(id);
+    $.ajax({
+        url : "{{ url_for('books.books_destroy')}}",
+        type : "POST",
+        data : JSON.stringify({id : id}),
+        dataType : "json",
+        contentType : "application/json; charset=utf-8",
+        success : function(data){
+          if (data == 1){
+             $('#modal-del').modal('hide');
+             location.reload();
+
+             isdel(id)
+         }else{
+            alert('Database Error!')
+        }
+    }
+});
+});
+
+  $(document).on("click","#rent_btn", function(e){
+    e.preventDefault();
+    var id = $(this).data("ids");
+    var ams = $(this).data("ams");
+    var avs = $(this).data("avs");
+    $('#rent-id').val(id);
+    $('#rent-amount').val(ams);
+    $('#rent-available').val(avs);
+    $.ajax({
+      url: "{{ url_for('status.status_show')}}",
+      type:"get",
+      data:{id:id},
+      success: function(data){
+       $("#customersss").empty();
+       var option1 = "<option selected>Select Customer</option>"; 
+       $("#customersss").append(option1); 
+       var len = data.length;
+       if(len > 0){
+         for(var i=0; i<len; i++){
+          var id = data[i].id;
+          var name = data[i].lastname + ", " +data[i].firstname + " " + data[i].middlename[0] + ".";
+          var option = "<option value='"+id+"'>"+name+"</option>"; 
+          $("#customersss").append(option);   
+      }
+  }
+  $('#modal-rent').modal('toggle');
+
+  document.getElementById("rent_qty").setAttribute("min", "1"); 
+
+  document.getElementById("rent_qty").setAttribute("max", avs); 
+
+
+
+}    
+
+});
+});
+
+
+
+  function update_available(id,vals){
+    $.ajax({
+        url : "{{ url_for('books.updete_available')}}",
+        type : "POST",
+        data : JSON.stringify({id : id,
+            vals : vals}),
+        dataType : "json",
+        contentType : "application/json; charset=utf-8",
+        success : function(data){
+          if (data == 1){
+          }else{
+
+          }
+      }
+  });
+}
+jQuery(function () {
+    $("#date_to").datepicker({
+        minDate: 'dateToday',
+        dateFormat: "mm/dd/yy",
+        maxDate: '',
+    });
+
+});
+
+jQuery(function () {
+    $("#date_from").datepicker({
+        minDate: 'dateToday',
+        dateFormat: "mm/dd/yy",
+        maxDate: '',
+    });
+
+});
+$(document).on("click","#book-submit", function(e){
+    e.preventDefault();
+    var user_id = $('#customersss').val();
+    var book_id_requested = $('#rent-id').val();
+    var requested_date = $('#date_from').val() + "|" + $('#date_to').val();
+    var rent_qty = $('#rent_qty').val();
+    var rent_ams = $('#rent-amount').val();
+    var rent_avs = $('#rent-available').val();
+
+    if (user_id == ""  || book_id_requested == ""  || requested_date == "" || rent_qty == "" || rent_ams == "" || user_id == "Select Customer") {
+        alert('Information Empty')
+    }
+
+    else{
+        $.ajax({
+            url : "{{ url_for('status.status_store')}}",
+            type : "POST",
+            data : JSON.stringify({
+                user_id : user_id,
+                book_id_requested : book_id_requested,
+                requested_date: requested_date, 
+                rent_qty: rent_qty,
+                rent_ams: rent_ams,
+            }),
+            dataType : "json",
+            contentType : "application/json; charset=utf-8",
+            success : function(data){
+                if (data == 1) {
+                    update_available(book_id_requested,rent_qty);
+                    location.reload();
+                }else{
+                    alert('Database Error!')
+                }
+            }
+        });
+    }
+
+
+});
+
+
+
+
+$("#rent_qty").bind('keyup mouseup', function () {
+    var rent_qty = $('#rent_qty').val();
+    var rent_ams = $('#rent-amount').val();
+    var rent_avs = $('#rent-available').val();
+
+
+    var startdate = new Date($('#date_from').val());
+    var enddate = new Date($('#date_to').val());
+
+    var milisec = enddate - startdate;
+    var dayrent = milisec / (1000 * 60 * 60 * 24);
+
+
+
+   document.getElementById("rent_total_amount").value = (rent_qty * rent_ams) * dayrent;    
+   
+});
+
+
+
+
+
+</script> 
+{% endblock %}
